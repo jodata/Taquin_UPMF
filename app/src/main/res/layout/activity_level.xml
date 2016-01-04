@@ -16,7 +16,8 @@
         android:src="@drawable/logo_taquin"
         android:scaleType="fitCenter"
         android:layout_alignParentStart="false"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:contentDescription="taquin_logo" />
 
     <TextView
         android:layout_width="wrap_content"
