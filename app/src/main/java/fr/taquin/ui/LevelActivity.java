@@ -108,14 +108,16 @@ public class LevelActivity extends AppCompatActivity {
            mImageURI = data.getData();
         }
         //On fait ce code pour toutes les startActivity
-        Bitmap bitmap = Utils.setPicFromUri(btnImage.getWidth(), btnImage.getHeight(), LevelActivity.this, mImageURI);
-        if(bitmap.getWidth() > bitmap.getHeight()){
-            modePortrait = false;
-        } else {
-            modePortrait = true;
+        if(resultCode == RESULT_OK) {
+            Bitmap bitmap = Utils.setPicFromUri(btnImage.getWidth(), btnImage.getHeight(), LevelActivity.this, mImageURI);
+            if (bitmap.getWidth() > bitmap.getHeight()) {
+                modePortrait = false;
+            } else {
+                modePortrait = true;
+            }
+            btnImage.setImageBitmap(bitmap);
+            btnValider.setEnabled(true);
         }
-        btnImage.setImageBitmap(bitmap);
-        btnValider.setEnabled(true);
     }
 
     private void seekPicture(){
