@@ -52,7 +52,7 @@ public class TaquinActivity extends AppCompatActivity {
         }
 
         grille.setNumColumns(level);
-        taquinAdapter = new TaquinAdapter(this, level, mImageURI, size.x, size.y-getActionBarHeight()-getStatusBarHeight()-100);
+        taquinAdapter = new TaquinAdapter(this, level, mImageURI, size.x, size.y-getStatusBarHeight()-(int)getResources().getDimension(R.dimen.buttonHeight));
         grille.setAdapter(taquinAdapter);
         grille.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

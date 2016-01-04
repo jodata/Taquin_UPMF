@@ -40,6 +40,9 @@ public class TaquinAdapter extends BaseAdapter {
          shuffle();
     }
 
+    /**
+     *
+     */
     private void createPictureSamples() {
         answer = new ArrayList<>();
         int realImgHeight = (screenWidth * bmp.getHeight()) / bmp.getWidth();
