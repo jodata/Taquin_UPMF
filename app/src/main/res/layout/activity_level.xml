@@ -1,80 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.jordan.taquin.ui.LevelActivity">
+    android:layout_height="match_parent"
+    tools:context=".ui.LevelActivity"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:alignmentMode="alignMargins"
+    android:columnOrderPreserved="true"
+    android:useDefaultMargins="true">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Valider"
-        android:id="@+id/btnValider"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="67dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/imageView"
+        android:src="@drawable/logo_taquin"
+        android:scaleType="fitCenter"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Veuillez choisir votre niveau !"
+        android:text="Niveau :"
         android:id="@+id/text"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp" />
+        android:paddingTop="15dp"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:singleLine="true"
+        android:layout_gravity="fill_vertical"
+        android:layout_below="@+id/imageView" />
 
     <Spinner
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:id="@+id/spinner"
         android:focusable="false"
         android:spinnerMode="dropdown"
         android:textAlignment="center"
-        android:layout_below="@+id/text"
-        android:layout_alignLeft="@+id/text"
-        android:layout_alignStart="@+id/text"
-        android:layout_marginTop="49dp"
-        android:layout_alignRight="@+id/text"
-        android:layout_alignEnd="@+id/text" />
+        android:layout_gravity="fill"
+        android:layout_toRightOf="@+id/text"
+        android:layout_below="@+id/imageView" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Sélectionnez ou prenez une photo"
         android:id="@+id/textPicture"
-        android:layout_below="@+id/spinner"
-        android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true" />
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textIsSelectable="false"
+        android:layout_gravity="fill_horizontal"
+        android:layout_below="@+id/spinner" />
+
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/mImageButton"
-        android:layout_above="@+id/btnValider"
-        android:layout_alignLeft="@+id/spinner"
-        android:layout_alignStart="@+id/spinner"
         android:background="?android:selectableItemBackground"
         android:src="@drawable/camera"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:layout_alignRight="@+id/spinner"
-        android:layout_alignEnd="@+id/spinner"
         android:longClickable="false"
-        android:layout_below="@+id/checkBoxPhoto" />
+        android:layout_gravity="fill"
+        android:scaleType="fitCenter"
+        android:layout_below="@+id/textPicture"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/btnValider" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:text="Valider"
+        android:id="@+id/btnValider"
+        android:layout_gravity="fill"
+        android:layout_centerHorizontal="true"
+        android:gravity="fill_horizontal"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/checkBoxPhoto"
+        android:textAlignment="center"
+        android:paddingTop="15dp" />
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Conserver la Photo"
         android:id="@+id/checkBoxPhoto"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:checked="false" />
+        android:checked="false"
+        android:layout_gravity="fill_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" />
 </RelativeLayout>
