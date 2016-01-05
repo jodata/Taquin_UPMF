@@ -17,13 +17,13 @@
         android:scaleType="fitCenter"
         android:layout_alignParentStart="false"
         android:layout_alignParentTop="true"
-        android:contentDescription="taquin_logo" />
+        android:contentDescription="@string/logo_Description" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Niveau :"
+        android:text="@string/text_level"
         android:id="@+id/text"
         android:paddingTop="15dp"
         android:textSize="20sp"
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Sélectionnez ou prenez une photo"
+        android:text="@string/text_select"
         android:id="@+id/textPicture"
         android:textColor="#000000"
         android:textSize="20sp"
@@ -74,7 +74,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="@dimen/buttonHeight"
-        android:text="Valider"
+        android:text="@string/btn_valid"
         android:id="@+id/btnValider"
         android:layout_gravity="fill"
         android:height="@dimen/buttonHeight"
@@ -82,16 +82,19 @@
         android:gravity="fill_horizontal"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:layout_above="@+id/checkBoxPhoto"
         android:textAlignment="center"
         android:paddingTop="15dp" />
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Conserver la Photo"
+        android:text="@string/check_keep"
         android:id="@+id/checkBoxPhoto"
         android:checked="false"
         android:layout_gravity="fill_horizontal"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true" />
 </RelativeLayout>

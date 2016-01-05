@@ -31,14 +31,18 @@ public class TaquinActivity extends AppCompatActivity {
         final Button btnretour = (Button) findViewById(R.id.btnRetour);
         int level = 2;
 
+        // On récupère la taille de l'écran
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
 
+        // Informations envoyées par l'activité précédente
         Intent intent = getIntent();
         if (intent != null) {
             level = intent.getIntExtra("level", 0);
             mImageURI = Uri.parse(intent.getStringExtra("imgURI"));
+
+            // On adapte l'orientation de l'écran en fonction de l'orientation de l'image
             boolean modePortrait = intent.getBooleanExtra("portrait", true);
             if(modePortrait){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -47,21 +51,25 @@ public class TaquinActivity extends AppCompatActivity {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
             }
         }
-        else{
+        else{ // Si on a pas reçu d'intent on termine l'activité
             finish();
         }
 
         grille.setNumColumns(level);
+
+        // Le taquin adapter a besoin de connaître la taille réelle disponible sur l'écran pour adapter l'image
         taquinAdapter = new TaquinAdapter(this, level, mImageURI, size.x, size.y-getStatusBarHeight()-(int)getResources().getDimension(R.dimen.buttonHeight));
         grille.setAdapter(taquinAdapter);
+
         grille.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!success) {
-                    success = taquinAdapter.change(position, false);
+                    success = taquinAdapter.play(position, false);
+                    // On met à jour la grille
                     grille.invalidateViews();
                     if (success) {
-                        // A faire un message de succes
+                        // A faire un message de succès
                     }
                 }
             }
@@ -83,6 +91,10 @@ public class TaquinActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Retourne la hauteur de la barre de statut du téléphone
+     * @return Valeur en pixel de la taille de la barre
+     */
     public int getStatusBarHeight() {
         int result = 0;
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -91,6 +103,7 @@ public class TaquinActivity extends AppCompatActivity {
         }
         return result;
     }
+
 
     public int getActionBarHeight() {
         int result = 0;

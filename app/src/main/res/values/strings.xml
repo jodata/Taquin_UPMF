@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Taquin</string>
+    <string name="btn_valid">Valider</string>
+    <string name="btn_back">Retour</string>
+    <string name="btn_shuffle">Mélanger</string>
+    <string name="text_level">Niveau : </string>
+    <string name="check_keep">Conserver la photo</string>
+    <string name="text_select">Sélectionnez ou prenez une photo</string>
+    <string name="logo_Description">Logo du taquin</string>
 </resources>
