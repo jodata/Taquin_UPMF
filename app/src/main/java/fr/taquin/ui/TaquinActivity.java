@@ -69,7 +69,9 @@ public class TaquinActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!success) {
                     success = taquinAdapter.play(position, false);
+                    //Lors de la fonction play le sens de l'animation est mis à jour
                     Animation anim = taquinAdapter.getAnimation();
+                    //On indique la durée du déplacement
                     anim.setDuration(300);
                     anim.setAnimationListener(new Animation.AnimationListener() {
                         @Override
@@ -77,6 +79,8 @@ public class TaquinActivity extends AppCompatActivity {
 
                         }
 
+                        //On mets en place un listener pour mettre réellement à jour la grille à la fin de l'animation
+                        //On affiche un message de fin si la taquin est terminé
                         @Override
                         public void onAnimationEnd(Animation animation) {
                             // On met à jour la grille
@@ -93,8 +97,9 @@ public class TaquinActivity extends AppCompatActivity {
 
                         }
                     });
-                    //grille.setLayoutAnimation(new GridLayoutAnimationController(anim));
+                    //On réccupère la vue de l'image à déplacer
                     View v = grille.getChildAt(position);
+                    //On lui applique l'animation précédemment réccupérée
                     v.startAnimation(anim);
                 }
             }

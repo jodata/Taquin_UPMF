@@ -64,7 +64,9 @@ public class TaquinAdapter extends BaseAdapter {
         int pos = imgParts.size() - 1;
         //On remplace la dernière image par une image transparente
         empty = getTransparent(imgParts.get(pos));
+        //On met à jour l'image transparente dans le tableau réponse
         answer.set(pos,empty);
+        //On met à jour l'image transparente dans la grille
         imgParts.set(pos,empty);
         shuffle();
     }
