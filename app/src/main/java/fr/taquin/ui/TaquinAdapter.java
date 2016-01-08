@@ -32,11 +32,23 @@ public class TaquinAdapter extends BaseAdapter {
         size = s;
         screenHeight = height;
         screenWidth = width;
+
+        // On crée la photo grâce à son URI
         bmp = Utils.setPicFromUri(screenWidth, screenHeight, mContext, src);
+
         createPictureSamples();
         initGame();
     }
 
+    public Animation getAnimation() {
+        return animation;
+    }
+
+    /**
+     * Renvoie un Bitmap transparent de la même taille que la source
+     * @param src
+     * @return
+     */
     public Bitmap getTransparent(Bitmap src) {
         Bitmap transBitmap = Bitmap.createBitmap(src.getWidth(), src.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(transBitmap);
@@ -44,13 +56,13 @@ public class TaquinAdapter extends BaseAdapter {
         return transBitmap;
     }
 
-    public Animation getAnimation() {
-        return animation;
-    }
-
+    /**
+     * Initialise la liste d'images du jeu et la mélange
+     */
     public void initGame() {
         imgParts = new ArrayList<>(answer);
         int pos = imgParts.size() - 1;
+        //On remplace la dernière image par une image transparente
         empty = getTransparent(imgParts.get(pos));
         answer.set(pos,empty);
         imgParts.set(pos,empty);
@@ -58,18 +70,20 @@ public class TaquinAdapter extends BaseAdapter {
     }
 
     /**
-     *
+     * Permet de couper l'image en plusieurs parties avec une taille adaptée
      */
     private void createPictureSamples() {
         answer = new ArrayList<>();
-        int realImgHeight = (screenWidth * bmp.getHeight()) / bmp.getWidth();
+
+        // On va recupérer la hauteur qu'aurait normalement l'image sans déformation
+        int anticipImgHeight = (screenWidth * bmp.getHeight()) / bmp.getWidth();
         int imgPartWidth = bmp.getWidth() / size;
         int imgPartHeight, offset = 0;
 
-        if(realImgHeight < screenHeight){
+        if(anticipImgHeight < screenHeight){  // Si la taille prévue ne dépasse pas celle de l'écran on prends comme base la hauteur réelle de l'image
             imgPartHeight = bmp.getHeight() / size;
         }
-        else {
+        else { //Sinon on fait en sorte que l'image prenne toute la hauteur et on prend le centre de l'image
             imgPartHeight = (screenHeight*bmp.getWidth()/screenWidth)/size;
             offset = bmp.getHeight()/2 - imgPartHeight*size/2;
         }
@@ -79,26 +93,39 @@ public class TaquinAdapter extends BaseAdapter {
                 answer.add(part);
             }
         }
-        hiddenBmp = answer.get(answer.size()-1).copy(answer.get(answer.size() - 1).getConfig(), true); // On crée une copie de l'image cachée
+
+        // On crée une copie de l'image cachée
+        hiddenBmp = answer.get(answer.size()-1).copy(answer.get(answer.size() - 1).getConfig(), true);
     }
-    public boolean change(int position, boolean init){
-        boolean change = false;
+
+    /**
+     * Cette fonction joue un déplacement d'une case
+     * @param position Identifiant du la case cliquée
+     * @param init Permet de savoir si c'est un changement d'initialisation ou en cours de jeu
+     * @return Retourn vrai si le taquin est terminé
+     */
+    public boolean play(int position, boolean init){
+
+        boolean goodCase = false;
         success = false;
         float tx=0.0f,ty=0.0f;
         if(position >= 0 && position < imgParts.size()) {
             int posEmpty = imgParts.indexOf(empty);
             int[] leftRightUpDown = {-1, -1, -1, -1};
-            if (position % size != 0) {
+
+            if (position % size != 0) { //On exclut les images tout à gauche
                 leftRightUpDown[0] = position - 1;
             }
-            if (position % size != size - 1) {
+            if (position % size != size - 1) { // On exclut les images tout à droite
                 leftRightUpDown[1] = position + 1;
             }
             leftRightUpDown[2] = position + size;
             leftRightUpDown[3] = position - size;
-            for (int i = 0; i < 4; i++)
+
+            // Si le clic a été fait sur une image voisine de l'image vide on échangera
+            for (int i = 0; i < 4; i++) {
                 if (leftRightUpDown[i] == posEmpty) {
-                    change = true;
+                    goodCase = true;
                     switch(i) {
                         case 0 ://left
                             tx = -1.0f;break;
@@ -110,7 +137,10 @@ public class TaquinAdapter extends BaseAdapter {
                             ty = -1.0f;break;
                     }
                 }
-            if (change) {
+            }
+
+            // On réalise le changement
+            if (goodCase) {
                 Bitmap tmp = imgParts.get(position);
                 imgParts.set(position, empty);
                 imgParts.set(posEmpty, tmp);
@@ -124,6 +154,9 @@ public class TaquinAdapter extends BaseAdapter {
         return success;
     }
 
+    /**
+     * Réalise 1000 déplacements aléatoires du taquin pour le mélanger
+     */
     public void shuffle(){
         for(int i = 0 ; i < 1000 ; i++){
             if(imgParts.indexOf(empty) ==-1){ // La partie est terminée donc on ne peut pas mélanger
@@ -133,22 +166,26 @@ public class TaquinAdapter extends BaseAdapter {
                 int random = (int) (Math.random() * 4);
                 switch (random) {
                     case 0:
-                        change(position - 1, true);
+                        play(position - 1, true);
                         break;
                     case 1:
-                        change(position + 1, true);
+                        play(position + 1, true);
                         break;
                     case 2:
-                        change(position - size, true);
+                        play(position - size, true);
                         break;
                     case 3:
-                        change(position + size, true);
+                        play(position + size, true);
                         break;
                 }
             }
         }
     }
 
+    /**
+     *
+     * @return Retourn vrai si le taquin est réussi
+     */
     public boolean success(){
         for(int i=0 ; i < answer.size() ; i++){
             if(!answer.get(i).sameAs(imgParts.get(i))){
@@ -179,15 +216,12 @@ public class TaquinAdapter extends BaseAdapter {
 
 
     @Override
-    //public int getCount() {return samples.length;}
     public int getCount() {return imgParts.size();}
 
     @Override
-    //public Object getItem(int position) {return samples[position];}
     public Object getItem(int position) {return imgParts.get(position);}
 
     @Override
-    //public long getItemId(int position) {return 0;}
     public long getItemId(int position) {return answer.indexOf(imgParts.get(position));}
 
 }

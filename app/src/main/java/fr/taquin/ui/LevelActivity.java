@@ -30,6 +30,7 @@ public class LevelActivity extends AppCompatActivity {
     ImageButton btnImage;
     Button btnValider;
     Boolean modePortrait = true;
+    CheckBox checkPhoto;
     static final int REQUEST_TAKE_PHOTO = 1;
     static final int SEEK_PICTURE = 2;
 
@@ -41,28 +42,42 @@ public class LevelActivity extends AppCompatActivity {
         btnValider = (Button) findViewById(R.id.btnValider);
         btnValider.setEnabled(false);
         btnImage = (ImageButton) findViewById(R.id.mImageButton);
-        final CheckBox checkPhoto = (CheckBox) findViewById(R.id.checkBoxPhoto);
+        checkPhoto = (CheckBox) findViewById(R.id.checkBoxPhoto);
         final Spinner spinnerLevel = (Spinner) findViewById(R.id.spinner);
+
+        //On force l'orientation en mode portrait
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+
+        ///// CREATION DU SPINNER DE NIVEAUX /////
         List<String> list = new ArrayList<>();
         list.add("Débutant (2*2)");
         list.add("Normal (3*3)");
         list.add("Expert (4*4)");
         list.add("Mission impossible");
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>
-                (this, android.R.layout.simple_spinner_item,list);
-
-        dataAdapter.setDropDownViewResource
-                (android.R.layout.simple_spinner_dropdown_item);
-
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLevel.setAdapter(dataAdapter);
+
+
+
+        btnImage.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                displayAlert();
+            }
+        });
+
         btnValider.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
+
+                // On enregistre la photo si la case correspondante est cochée
                 if(checkPhoto.isChecked()){
                     Utils.galleryAddPic(LevelActivity.this, mImageURI);
                 }
+
+                //On envoie les informations à la prochaine activité
                 int level = spinnerLevel.getSelectedItemPosition()+2;
                 Intent intent = new Intent(LevelActivity.this, TaquinActivity.class);
                 intent.putExtra("level",level);
@@ -72,52 +87,62 @@ public class LevelActivity extends AppCompatActivity {
             }
         });
 
-        btnImage.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                displayAlert();
-            }
-        });
-
     }
+
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
+            //Création du fichier pour la photo
             File photoFile = null;
             try {
                 photoFile = Utils.createImageFile();
             } catch (IOException ex) {
-                // Error occurred while creating the File
             }
-            // Continue only if the File was successfully created
             if (photoFile != null) {
+
+                //On récupère l'URI pour l'envoyer à la prochaine activité (plutot que d'envoyer l'image complète)
                 mImageURI = Uri.fromFile(photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(photoFile));
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
         }
     }
 
+    /**
+     *
+     * @param requestCode code du startActivity
+     * @param resultCode Pour savoir si l'activité s'est bien déroulée (resultCode == RESULT_OK si oui)
+     * @param data données de l'activité
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == SEEK_PICTURE && resultCode == RESULT_OK) {
-           mImageURI = data.getData();
+            mImageURI = data.getData();
+            checkPhoto.setChecked(false);
+            checkPhoto.setEnabled(false);
         }
-        //On fait ce code pour toutes les startActivity
-        Bitmap bitmap = Utils.setPicFromUri(btnImage.getWidth(), btnImage.getHeight(), LevelActivity.this, mImageURI);
-        if(bitmap.getWidth() > bitmap.getHeight()){
-            modePortrait = false;
-        } else {
-            modePortrait = true;
+
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            checkPhoto.setEnabled(true);
         }
-        btnImage.setImageBitmap(bitmap);
-        btnValider.setEnabled(true);
+
+        //On fait ce code pour toutes les startActivity (on possède l'Uri de la photo)
+        if(resultCode == RESULT_OK) {
+            Bitmap bitmap = Utils.setPicFromUri(btnImage.getWidth(), btnImage.getHeight(), LevelActivity.this, mImageURI);
+            if (bitmap.getWidth() > bitmap.getHeight()) {
+                modePortrait = false;
+            } else {
+                modePortrait = true;
+            }
+            btnImage.setImageBitmap(bitmap);
+            btnValider.setEnabled(true);
+        }
     }
 
+    /**
+     * Recherche une image sur le téléphone
+     */
     private void seekPicture(){
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -125,6 +150,9 @@ public class LevelActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), SEEK_PICTURE);
     }
 
+    /**
+     * Affiche une boite de dialogue pour choisir la photo
+     */
     public void displayAlert()
     {
         new AlertDialog.Builder(this).setMessage("Veuillez charger ou prendre une photo")
