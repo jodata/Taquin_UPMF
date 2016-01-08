@@ -8,10 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import fr.taquin.R;
 
@@ -66,7 +69,6 @@ public class TaquinActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!success) {
                     success = taquinAdapter.play(position, false);
-                    success= taquinAdapter.change(position, false);
                     Animation anim = taquinAdapter.getAnimation();
                     anim.setDuration(300);
                     anim.setAnimationListener(new Animation.AnimationListener() {
@@ -80,7 +82,9 @@ public class TaquinActivity extends AppCompatActivity {
                             // On met à jour la grille
                             grille.invalidateViews();
                             if (success) {
-                                // A faire un message de succes
+                                Toast toast = Toast.makeText(TaquinActivity.this, "Taquin Résolu !", Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.CENTER, 0, 0);
+                                toast.show();
                             }
                         }
 
