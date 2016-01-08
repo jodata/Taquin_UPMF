@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.GridLayoutAnimationController;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -58,11 +60,31 @@ public class TaquinActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!success) {
-                    success = taquinAdapter.change(position, false);
-                    grille.invalidateViews();
-                    if (success) {
-                        // A faire un message de succes
-                    }
+                    success= taquinAdapter.change(position, false);
+                    Animation anim = taquinAdapter.getAnimation();
+                    anim.setDuration(300);
+                    anim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            grille.invalidateViews();
+                            if (success) {
+                                // A faire un message de succes
+                            }
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    //grille.setLayoutAnimation(new GridLayoutAnimationController(anim));
+                    View v = grille.getChildAt(position);
+                    v.startAnimation(anim);
                 }
             }
         });

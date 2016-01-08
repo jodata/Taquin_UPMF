@@ -3,10 +3,13 @@ package fr.taquin.ui;
 import android.content.Context;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
@@ -22,6 +25,7 @@ public class TaquinAdapter extends BaseAdapter {
     private Bitmap empty, bmp, hiddenBmp;
     private int screenHeight, screenWidth;
     private boolean success = false;
+    private Animation animation;
 
     public TaquinAdapter(Context c,int s, Uri src, int width, int height){
         mContext = c;
@@ -33,11 +37,24 @@ public class TaquinAdapter extends BaseAdapter {
         initGame();
     }
 
-     public void initGame() {
-         imgParts = new ArrayList<>(answer);
-         imgParts.get(imgParts.size()-1).eraseColor(Color.BLACK);
-         empty = imgParts.get(imgParts.size() - 1);
-         shuffle();
+    public Bitmap getTransparent(Bitmap src) {
+        Bitmap transBitmap = Bitmap.createBitmap(src.getWidth(), src.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(transBitmap);
+        canvas.drawARGB(0, 0, 0, 0);
+        return transBitmap;
+    }
+
+    public Animation getAnimation() {
+        return animation;
+    }
+
+    public void initGame() {
+        imgParts = new ArrayList<>(answer);
+        int pos = imgParts.size() - 1;
+        empty = getTransparent(imgParts.get(pos));
+        answer.set(pos,empty);
+        imgParts.set(pos,empty);
+        shuffle();
     }
 
     /**
@@ -67,6 +84,7 @@ public class TaquinAdapter extends BaseAdapter {
     public boolean change(int position, boolean init){
         boolean change = false;
         success = false;
+        float tx=0.0f,ty=0.0f;
         if(position >= 0 && position < imgParts.size()) {
             int posEmpty = imgParts.indexOf(empty);
             int[] leftRightUpDown = {-1, -1, -1, -1};
@@ -78,12 +96,20 @@ public class TaquinAdapter extends BaseAdapter {
             }
             leftRightUpDown[2] = position + size;
             leftRightUpDown[3] = position - size;
-
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++)
                 if (leftRightUpDown[i] == posEmpty) {
                     change = true;
+                    switch(i) {
+                        case 0 ://left
+                            tx = -1.0f;break;
+                        case 1 ://right
+                            tx = 1.0f;break;
+                        case 2 ://up
+                            ty = 1.0f;break;
+                        case 3 ://down
+                            ty = -1.0f;break;
+                    }
                 }
-            }
             if (change) {
                 Bitmap tmp = imgParts.get(position);
                 imgParts.set(position, empty);
@@ -93,6 +119,8 @@ public class TaquinAdapter extends BaseAdapter {
                 }
             }
         }
+        animation = new TranslateAnimation(TranslateAnimation.RELATIVE_TO_SELF,0.0f,TranslateAnimation.RELATIVE_TO_SELF,tx,
+                TranslateAnimation.RELATIVE_TO_SELF,0.0f,TranslateAnimation.RELATIVE_TO_SELF,ty);
         return success;
     }
 
